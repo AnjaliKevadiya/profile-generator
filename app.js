@@ -9,12 +9,18 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
+const { default: build } = require("jest-leak-detector");
 
+const teamMembers = [];
+const idArray = [];
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
-const askForManagerInput = () => 
+function createManager() {
+
+    console.log("Please build your team");
+
     inquirer.prompt([
         {
             type: 'input',
@@ -35,86 +41,98 @@ const askForManagerInput = () =>
             type: 'input',
             message: 'What is your manager\'s office number?',
             name: 'managerOfficeNumber'
-        },        
+        }  
+    ]).then(answer => {
+        const manager = new Manager(answer.managerName, answer.managerId, answer.managerEmail, answer.managerOfficeNumber);
+        teamMembers.push(manager);
+        idArray.push(answer.managerId);
+        createTeam();
+    });
+}
+
+const createTeam = () => 
+    inquirer.prompt([
         {
             type: 'list',
+            name: 'memberType',
             message: 'Which type of team member would you like to add?',
-            choices: ['Engineer', 'Intern', 'I don\'t want to add any more team members'],
-            name: 'memberType'
+            choices: [
+                'Engineer', 
+                'Intern', 
+                'I don\'t want to add any more team members'
+            ]
         }
-    ]);
+    ]).then(userChoice => {
+        switch(userChoice.memberType) {
+            case "Engineer":
+                addEngineer();
+                break;
+            case "Intern":
+                addIntern();
+                break;
+            default:
+                buildTeam();
+        }
+    });
 
-    const askForEngineerInput = () =>
-        inquirer.prompt([
-            {
-                type: 'input',
-                message: 'What is your engineer\'s name?',
-                name: 'engineerName'
-            },
-            {
-                type: 'input',
-                message: 'What is your engineer\'s id?',
-                name: 'engineerId'
-            },
-            {
-                type: 'input',
-                message: 'What is your engineer\'s email?',
-                name: 'engineerEmail'
-            },
-            {
-                type: 'input',
-                message: 'What is your engineer\'s github username?',
-                name: 'engineerGithub'
-            },     
-            {
-                type: 'list',
-                message: 'Which type of team member would you like to add?',
-                choices: ['Engineer', 'Intern', 'I don\'t want to add any more team members'],
-                name: 'memberType'
-            }
-        ]);
+const addEngineer = () =>
+    inquirer.prompt([
+        {
+            type: 'input',
+            message: 'What is your engineer\'s name?',
+            name: 'engineerName'
+        },
+        {
+            type: 'input',
+            message: 'What is your engineer\'s id?',
+            name: 'engineerId'
+        },
+        {
+            type: 'input',
+            message: 'What is your engineer\'s email?',
+            name: 'engineerEmail'
+        },
+        {
+            type: 'input',
+            message: 'What is your engineer\'s github username?',
+            name: 'engineerGithub'
+        } 
+    ]).then(answer => {
+        createTeam();
+    });
 
-    const askForInternInput = () =>
-        inquirer.prompt([
-            {
-                type: 'input',
-                message: 'What is your intern\'s name?',
-                name: 'internName'
-            },
-            {
-                type: 'input',
-                message: 'What is your intern\'s id?',
-                name: 'internId'
-            },
-            {
-                type: 'input',
-                message: 'What is your intern\'s email?',
-                name: 'internEmail'
-            },
-            {
-                type: 'input',
-                message: 'What is your intern\'s school name?',
-                name: 'internSchoolName'
-            },     
-            {
-                type: 'list',
-                message: 'Which type of team member would you like to add?',
-                choices: ['Engineer', 'Intern', 'I don\'t want to add any more team members'],
-                name: 'memberType'
-            }
-        ]);
+const addIntern = () =>
+    inquirer.prompt([
+        {
+            type: 'input',
+            message: 'What is your intern\'s name?',
+            name: 'internName'
+        },
+        {
+            type: 'input',
+            message: 'What is your intern\'s id?',
+            name: 'internId'
+        },
+        {
+            type: 'input',
+            message: 'What is your intern\'s email?',
+            name: 'internEmail'
+        },
+        {
+            type: 'input',
+            message: 'What is your intern\'s school name?',
+            name: 'internSchoolName'
+        }   
+    ]).then(answer => {
+        createTeam();
+    });
 
-    askForManagerInput()
-        .then((data) => {
-            if(data.memberType === 'Engineer') {
-                askForEngineerInput()
-            } else if(data.memberType === 'Intern') {
-                askForInternInput()
-            } else {
-                console.log("create html file");
-            }
-            //console.log(JSON.stringify(data));
-        });
+function buildTeam() {
+    console.log(teamMembers);
+}
+
+createManager();
+
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
