@@ -98,6 +98,9 @@ const addEngineer = () =>
             name: 'engineerGithub'
         } 
     ]).then(answer => {
+        const engineer = new Engineer(answer.engineerName, answer.engineerId, answer.engineerEmail, answer.engineerGithub);
+        teamMembers.push(engineer);
+        idArray.push(answer.engineerId);
         createTeam();
     });
 
@@ -124,6 +127,9 @@ const addIntern = () =>
             name: 'internSchoolName'
         }   
     ]).then(answer => {
+        const intern = new Intern(answer.internName, answer.internId, answer.internEmail, answer.internSchoolName);
+        teamMembers.push(intern);
+        idArray.push(answer.internId);
         createTeam();
     });
 
