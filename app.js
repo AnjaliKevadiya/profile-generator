@@ -14,9 +14,6 @@ const { default: build } = require("jest-leak-detector");
 const teamMembers = [];
 const idArray = [];
 
-// Write code to use inquirer to gather information about the development team members,
-// and to create objects for each team member (using the correct classes as blueprints!)
-
 function createManager() {
 
     console.log("Please build your team");
