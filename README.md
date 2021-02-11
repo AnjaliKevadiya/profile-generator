@@ -23,8 +23,6 @@ This application helps you to build a software engineering team generator comman
 To install necessary dependencies, run the following command:
 
 ```
-npm i
-OR
 npm install
 ```
 
